@@ -1,0 +1,25 @@
+{
+  "name": "formstack-web-api-node",
+  "version": "1.0.0",
+  "description": "Node.js wrapper for Formstack API",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fomrstack",
+    "wrapper",
+    "node",
+    "js",
+    "client",
+    "web",
+    "api"
+  ],
+  "author": "Andrei Domsa",
+  "license": "MIT",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndreiDMS/formstack-web-api-node.git"
+  }
+}
