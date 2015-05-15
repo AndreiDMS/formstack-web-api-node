@@ -131,6 +131,7 @@ FsAPI.prototype.request = function(endpoint, verb, args, callback) {
         options.headers["Content-Length"] = postData.length;
     
     var req = https.request(options, function(res) {
+    	
     	if (res.statusCode < 200 || res.statusCode >= 300) {
     		return callback(null, new Error('Request failed with status code: ' + res.statusCode));
 		}
@@ -202,23 +203,27 @@ FsAPI.prototype.getForms = function(args, callback) {
 /**
 * Get the detailed information of a specific Form
 * 
-* @link    https://www.formstack.com/developers/api/resources/form#form/:id_GET
+* @link		https://www.formstack.com/developers/api/resources/form#form/:id_GET
 * 
-* @param    {number} formId                  Form Id
+* @param 	{integer}	formId				Form Id
 *
-* @param    {function}  callback(data, err)  Callback function for async requests.
-*              {array}     data        Array of all Forms or Array of Folders
-*              {object}    err         Error information, if any. If an error occurs, data is undefined
+* @param	{function}	callback(data, err)	Callback function for async requests.
+* 				{array}		data			Array of all Forms or Array of Folders
+* 				{object}	err				Error information, if any. If an error occurs, data is null
 */
 FsAPI.prototype.getFormDetails = function(formId, callback) { 
     
     if ( isNaN(formId) ) {
-        console.error('Form ID is required and must be numeric');
-        return (callback) ? callback() : null;
+        throw new Error('Form ID is required and must be numeric');
     }
     
-    this.request('form/'+formId, 'GET', {}, function(data, err){
-        
+    this.request('form/'+formId, 'GET', null, function(data, err) {
+    	
+    	if (data && data.status == 'error'){
+    		err = data;
+    		data = null;
+    	}
+
         if (callback) {
             callback(data, err);
         }
@@ -232,22 +237,27 @@ FsAPI.prototype.getFormDetails = function(formId, callback) {
 /**
 * Create a copy of a Form in your account.
 * 
-* @link    https://www.formstack.com/developers/api/resources/form#form/:id/copy_POST
+* @link		https://www.formstack.com/developers/api/resources/form#form/:id/copy_POST
 * 
-* @param    {number}    formId      Required. The ID of the Form to copy  
-* @param    {function}  callback(data, err)   Callback function for async requests.
-*              {object}    data        An object representing all of the copy's data
-*              {object}    err         Error information, if any. If an error occurs, data is undefined
+* @param	{number}	formId				Required. The ID of the Form to copy
+*   
+* @param	{function}  callback(data, err)	Callback function for async requests.
+* 				{object}	data			An object representing all of the copy's data
+* 				{object}	err				Error information, if any.
 */
 FsAPI.prototype.copyForm = function(formId, callback) {
    
     if ( isNaN(formId) ) {
-        console.error('Form ID is required and must be numeric');
-        return (callback) ? callback() : null;
+    	throw new Error('Form ID is required and must be numeric');
     }
     
     this.request('form/' + formId + '/copy', 'POST', {}, function(data, err){
-        
+    	
+    	if (data && data.status == 'error'){
+    		err = data;
+    		data = null;
+    	}
+    	
         if (callback) {
             callback(data, err);
         }

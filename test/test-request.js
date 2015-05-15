@@ -3,11 +3,10 @@ var should = require('should');
 var assert = require('assert');
 var fsAPI = require('formstack-web-api-node');
 
+var fsa = new fsAPI(fsaConf.ACCESS_TOKEN);
 
 describe('fsapi', function(){
 	describe('#request()', function(){
-		
-		var fsa = new fsAPI(ACCESS_TOKEN);
 		
 		it('should throw an error when the endpoint is not present', function(){
 			(function(){
