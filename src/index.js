@@ -50,7 +50,7 @@ var FsAPI = function(accessToken, host, port, path) {
     /**
     * @param {string} accessToken
     */
-	this.accessToken = accessToken;
+		this.accessToken = accessToken;
     
     /**
     * FormStack api port number.
@@ -63,12 +63,12 @@ var FsAPI = function(accessToken, host, port, path) {
     * Host
     * @param {string} apiHost
     */
-	this.apiHost = host || 'www.formstack.com';
+		this.apiHost = host || 'www.formstack.com';
 	
     /**
     * @param {string} apiPath
     */
-	this.apiPath = path || '/api/v2/';
+		this.apiPath = path || '/api/v2/';
 };
 
 FsAPI.prototype = {};
@@ -78,44 +78,43 @@ FsAPI.prototype = {};
 *
 * @param   {string}    endpoint              Required. The endpoint to make requests to
 *
-* @param   {string}    verb                  String representation of HTTP verb to perform. Default: GET
-*
-* @param   {object}    args                  Object of all request arguments to use. Default: {}
-*
 * @param   {function}  callback(data, err)   Required. Callback function for async requests.
 *              {object}    data        Response from request
 *              {object}    err         Error information, if any. If an error occurs, data is null
 *
+* @param   {string}    verb                  String representation of HTTP verb to perform. Default: GET
+*
+* @param   {object}    args                  Object of all request arguments to use. Default: null
+*
+* @throw	Error			if no endpoint is specified
+* @throw	Error			if callback function not provided
+* @throw  Error			if an invalid verb is specified
+*
 */
-FsAPI.prototype.request = function(endpoint, verb, args, callback) {
-    
-    endpoint = endpoint || null;
+FsAPI.prototype.request = function(endpoint, callback, verb, args) {
+		
+		if ( !endpoint ){
+				throw new Error('You must include an enpoint to request');
+    }
+		
+		if ('function' != typeof callback){
+        throw new Error('You must provide a callback function');
+    }
     
     verb = verb || 'GET';
-    
+		
     args = args || null;
-    
-    if ( !callback ){
-        console.error('You must provide a callback function');
-        return;
-    }
-    
-    if ( !endpoint ){
-    	console.error('You must include an enpoint to request');
-    	return callback();
-    }
-
+		
     // Validate HTTPS method verb
     verb = verb.toUpperCase();
     if ( validVerbs.indexOf(verb) === -1) {
-        console.error('Your requests must be performed with one of the following verbs: ' + validVerbs.join(','));
-        return callback();
-    }
+				throw new Error('Your requests must be performed with one of the following verbs: ' + validVerbs.join(','));
+		}
     
     var postData = null;
     if (args)
         postData = querystring.stringify(args);
-    
+				
     // Build request using access token
     var options = {
 		hostname: this.apiHost,
@@ -130,26 +129,28 @@ FsAPI.prototype.request = function(endpoint, verb, args, callback) {
     if (postData)
         options.headers["Content-Length"] = postData.length;
     
-    var req = https.request(options, function(res){
-        console.log("statusCode: ", res.statusCode);
-    	console.log("headers: ", res.headers);
+    var req = https.request(options, function(res) {
+				if (res.statusCode < 200 || res.statusCode >= 300) {
+						return callback(null, new Error('Request failed with status code: ' + res.statusCode));
+				}
         
         var str = '';
-    	res.on('data', function(data) {
+    		res.on('data', function(data) {
             str += data;
-    	});
+    		});
         res.on('end', function(){
             var response = JSON.parse(str);
             callback(response);
         });
     });
+		
     if (postData)
         req.write(postData);
+		
     req.end();
     
     req.on('error', function(e){
-        console.error(e);
-        callback(null, e);
+				callback(null, e);
     });
 }
 
