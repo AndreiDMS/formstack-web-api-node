@@ -3,6 +3,7 @@
 require('./polyfill');
 
 var https = require('https');
+var querystring = require('querystring');
 
 /**
 * Valid verbs for https requests method
@@ -50,25 +51,25 @@ var FsAPI = function(accessToken, host, port, path) {
     /**
     * @param {string} accessToken
     */
-		this.accessToken = accessToken;
+	this.accessToken = accessToken;
     
     /**
     * FormStack api port number.
     * Defaults to 443
     * @param {number} apiPort
     */
-    this.apiPort = port || 443;
+	this.apiPort = port || 443;
 	
     /**
     * Host
     * @param {string} apiHost
     */
-		this.apiHost = host || 'www.formstack.com';
+	this.apiHost = host || 'www.formstack.com';
 	
     /**
     * @param {string} apiPath
     */
-		this.apiPath = path || '/api/v2/';
+	this.apiPath = path || '/api/v2/';
 };
 
 FsAPI.prototype = {};
@@ -76,29 +77,29 @@ FsAPI.prototype = {};
 /**
 * Helper method to make all requests to Formstack API
 *
-* @param   {string}    endpoint              Required. The endpoint to make requests to
+* @param	{string}	endpoint			Required. The endpoint to make requests to
 *
-* @param   {function}  callback(data, err)   Required. Callback function for async requests.
-*              {object}    data        Response from request
-*              {object}    err         Error information, if any. If an error occurs, data is null
+* @param	{function}	callback(data, err)	Required. Callback function for async requests.
+*				{object}	data			Response from request
+*				{object}	err				Error information, if any. If an error occurs, data is null
 *
-* @param   {string}    verb                  String representation of HTTP verb to perform. Default: GET
+* @param	{string}	verb				String representation of HTTP verb to perform. Default: GET
 *
-* @param   {object}    args                  Object of all request arguments to use. Default: null
+* @param	{object}	args				Object of all request arguments to use. Default: null
 *
-* @throw	Error			if no endpoint is specified
-* @throw	Error			if callback function not provided
-* @throw  Error			if an invalid verb is specified
+* @throw	Error	if no endpoint is specified
+* @throw	Error	if callback function not provided
+* @throw	Error	if an invalid verb is specified
 *
 */
-FsAPI.prototype.request = function(endpoint, callback, verb, args) {
+FsAPI.prototype.request = function(endpoint, verb, args, callback) {
 		
-		if ( !endpoint ){
-				throw new Error('You must include an enpoint to request');
+	if ( !endpoint ) {
+		throw new Error('You must include an enpoint to request');
     }
 		
-		if ('function' != typeof callback){
-        throw new Error('You must provide a callback function');
+	if ('function' != typeof callback) {
+		throw new Error('You must provide a callback function');
     }
     
     verb = verb || 'GET';
@@ -108,8 +109,8 @@ FsAPI.prototype.request = function(endpoint, callback, verb, args) {
     // Validate HTTPS method verb
     verb = verb.toUpperCase();
     if ( validVerbs.indexOf(verb) === -1) {
-				throw new Error('Your requests must be performed with one of the following verbs: ' + validVerbs.join(','));
-		}
+    	throw new Error('Your requests must be performed with one of the following verbs: ' + validVerbs.join(','));
+	}
     
     var postData = null;
     if (args)
@@ -130,15 +131,17 @@ FsAPI.prototype.request = function(endpoint, callback, verb, args) {
         options.headers["Content-Length"] = postData.length;
     
     var req = https.request(options, function(res) {
-				if (res.statusCode < 200 || res.statusCode >= 300) {
-						return callback(null, new Error('Request failed with status code: ' + res.statusCode));
-				}
+    	if (res.statusCode < 200 || res.statusCode >= 300) {
+    		return callback(null, new Error('Request failed with status code: ' + res.statusCode));
+		}
         
         var str = '';
-    		res.on('data', function(data) {
+    	
+        res.on('data', function(data) {
             str += data;
-    		});
-        res.on('end', function(){
+    	});
+        
+    	res.on('end', function() {
             var response = JSON.parse(str);
             callback(response);
         });
@@ -149,22 +152,22 @@ FsAPI.prototype.request = function(endpoint, callback, verb, args) {
 		
     req.end();
     
-    req.on('error', function(e){
-				callback(null, e);
+    req.on('error', function(e) {
+    	callback(null, e);
     });
-}
+};
 
 /**
 * Get a list of forms in your account
 *
-* @link    https://www.formstack.com/developers/api/resources/form#form_GET
+* @link		https://www.formstack.com/developers/api/resources/form#form_GET
 *
-* @param    {object}    args                Arguments passed to API request.
-*              {boolean} args.folderOrganized      Flag to determine whether response should be structured in Folders
+* @param	{object}	args				Arguments passed to API request.
+*				{boolean} args.folderOrganized		Flag to determine whether response should be structured in Folders
 *
-* @param    {function}  callback(data, err)   Required. Callback function for async requests.
-*              {array}     data        Array of all Forms or Array of Folders
-*              {object}    err         Error information, if any. If an error occurs, data is undefined
+* @param	{function}	callback(data, err)	Required. Callback function for async requests.
+* 				{array}		data			Array of all Forms or Array of Folders
+*				{object}	err				Error information, if any. If an error occurs, data is undefined
 *
 */
 FsAPI.prototype.getForms = function(args, callback) {
@@ -178,13 +181,13 @@ FsAPI.prototype.getForms = function(args, callback) {
     };
     
 	this.request('form.json', 'GET', params, function(data, err) {
-                
+		
         if (args.folderOrganized) {
+        	// TODO
             // Folders are returned as properties of the response->forms object
             // Converting response->forms to an array to be similar in behavior
             // to when there are no folders
-            // TODO
-            // response.forms = (array) $response->forms; // TODO: copy from php
+            // response.forms = (array) $response->forms;
         }
         
         if (callback) 
