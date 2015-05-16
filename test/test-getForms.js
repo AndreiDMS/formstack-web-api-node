@@ -10,7 +10,7 @@ describe('fsapi', function(){
 		
 		it('should return an array of existing forms', function(done){
 			fsa.getForms({}, function(data, err){
-				data.should.be.instanceOf(Array);
+				data.should.be.an.Array;
 				done();
 			});
 		})

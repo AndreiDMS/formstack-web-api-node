@@ -6,7 +6,7 @@ var fsAPI = require('formstack-web-api-node');
 var fsa = new fsAPI(fsaConf.ACCESS_TOKEN);
 
 describe('fsapi', function(){
-	describe('#request()', function(){
+	describe('#copyForm()', function(){
 		
 		it('should throw an error if formId is not number', function(){
 			(function(){
