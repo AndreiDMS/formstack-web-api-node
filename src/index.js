@@ -39,10 +39,14 @@ var validFieldTypes = [
 ];
 
 /**
+* Node.js wrapper for Formstack API v2.0
 *
 * @param {string}   accessToken   Requierd. Formstack API access token.
+* 
 * @param {string}   host          Formstack API host. Default: www.formstack.com
+* 
 * @param {number}   port          Formstack API port number. Default: 443
+* 
 * @param {path}     path          Formstack API relative path to host. Default: /api/v2/
 */
 var FsAPI = function(accessToken, host, port, path) {

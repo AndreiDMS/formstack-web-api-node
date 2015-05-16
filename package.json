@@ -1,6 +1,6 @@
 {
   "name": "formstack-web-api-node",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Node.js wrapper for Formstack API",
   "main": "src/index.js",
   "scripts": {
@@ -19,8 +19,8 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-		"mocha": "^2.2.5",
-    "should": "^6.0.1"
+	"mocha": "^2.2.5",
+	"should": "^6.0.1"
   },
   "repository": {
     "type": "git",
