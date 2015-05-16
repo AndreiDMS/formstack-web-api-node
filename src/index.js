@@ -508,7 +508,7 @@ FsAPI.prototype.getSubmissionDetails = function(submissionId, args, callback) {
         params.encryption_password = args.encryptionPassword;
     
     this.request('submission/' + submissionId + '.json', 'GET', params, function(data, err){
-        
+    	
     	if (data && data.status == 'error'){
     		err = data;
     		data = null;
@@ -521,7 +521,7 @@ FsAPI.prototype.getSubmissionDetails = function(submissionId, args, callback) {
             console.log('data', data);
             console.error('error', err);
         }
-    });  
+    });
 };
 
 /**
@@ -647,7 +647,7 @@ FsAPI.prototype.deleteSubmission = function(submissionId, callback) {
 };
 
 /**
-* Create a Field for the specified Form
+* Create a new field for the specified form
 *
 * @link		https://www.formstack.com/developers/api/resources/field#form/:id/field_POST
 * 
@@ -772,6 +772,13 @@ FsAPI.prototype.createField = function(formId, args, callback) {
 *
 ************** */
 
+/**
+ * Stringify method for query params
+ * 
+ * @para	{object}	data	Object containing string parameters
+ * 
+ * @return	{string}	uri encoded string
+ */
 function dataToQueryString(data) {
 
 	var queryParts = [];

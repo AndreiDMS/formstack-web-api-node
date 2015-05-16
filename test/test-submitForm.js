@@ -29,7 +29,7 @@ describe('fsapi', function(){
 			}).should.throw();
 		})
 		
-		it('should throw an error if a args.fieldValues value is not a number', function(){
+		it('should throw an error if a args.fieldIds value is not a number', function(){
 			(function(){
 				fsa.submitForm(fsaConf.FORM_SUBMIT_ID, {
 					fieldIds: [1, 'FAIL'],

@@ -93,8 +93,8 @@ describe('fsapi', function(){
 		it('should return submissions data', function(done){
 			fsa.getSubmissions(fsaConf.FORM_DETAILS_ID, {}, function(data, err){
 				data.submissions.should.be.an.Array;
-				data.total.should.be.a.Number;
-				data.pages.should.be.a.Number;
+				Number(data.total).should.be.a.Number;
+				Number(data.pages).should.be.a.Number;
 				done();
 			});
 		})
