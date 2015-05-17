@@ -1,7 +1,7 @@
 require('./config');
 var should = require('should');
 var assert = require('assert');
-var fsAPI = require('formstack-web-api-node');
+var fsAPI = require('../src/index');
 
 var fsa = new fsAPI(fsaConf.ACCESS_TOKEN);
 
