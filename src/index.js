@@ -768,6 +768,42 @@ FsAPI.prototype.createField = function(formId, args, callback) {
     }); 
 };
 
+/**
+ * GET Fields for specified Form
+ *
+ * @param   {number}    formId                  Required. The ID of the Form to retrieve Submissions for
+ *
+ * @param   {function}  callback(data, err)     Callback function for async requests.
+ *
+ *              {array}     data    Array of all Forms or Array of Folders
+ *              {object}    err     Error information, if any. If an error occurs, data is null
+ */
+
+FsAPI.prototype.getFields = function( formId, callback ){
+
+    if ( isNaN(formId) ) {
+        throw new Error('Form ID is required and must be numeric');
+    }
+
+    this.request( 'form/' + formId + '/field', 'GET', null, function( data, err ) {
+
+        if ( data && data.status == 'error' ) {
+            err = data;
+            data = null;
+        }
+
+        if ( callback ) {
+            callback( data, err );
+        }
+        else {
+            console.log( 'data', data );
+            console.error( 'error', err );
+        }
+
+    });
+
+}
+
 /** **************
 *
 * Private Methods
